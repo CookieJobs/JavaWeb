@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.confirm.dao.ConfirmDao">
+
+	<select id="get" resultType="com.bootdo.confirm.domain.ConfirmDO">
+		select `username`,`project1`,`ready_confirm_1`,`project2`,`ready_confirm_2` from crm_confirm where username = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.confirm.domain.ConfirmDO">
+		select `username`,`project1`,`ready_confirm_1`,`project2`,`ready_confirm_2` from crm_confirm
+        <where>  
+		  		  <if test="username != null and username != ''"> and username = #{username} </if>
+		  		  <if test="project1 != null and project1 != ''"> and project1 = #{project1} </if>
+		  		  <if test="readyConfirm1 != null and readyConfirm1 != ''"> and ready_confirm_1 = #{readyConfirm1} </if>
+		  		  <if test="project2 != null and project2 != ''"> and project2 = #{project2} </if>
+		  		  <if test="readyConfirm2 != null and readyConfirm2 != ''"> and ready_confirm_2 = #{readyConfirm2} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by username desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from crm_confirm
+		 <where>  
+		  		  <if test="username != null and username != ''"> and username = #{username} </if>
+		  		  <if test="project1 != null and project1 != ''"> and project1 = #{project1} </if>
+		  		  <if test="readyConfirm1 != null and readyConfirm1 != ''"> and ready_confirm_1 = #{readyConfirm1} </if>
+		  		  <if test="project2 != null and project2 != ''"> and project2 = #{project2} </if>
+		  		  <if test="readyConfirm2 != null and readyConfirm2 != ''"> and ready_confirm_2 = #{readyConfirm2} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.confirm.domain.ConfirmDO">
+		insert into crm_confirm
+		(
+			`username`, 
+			`project1`, 
+			`ready_confirm_1`, 
+			`project2`, 
+			`ready_confirm_2`
+		)
+		values
+		(
+			#{username}, 
+			#{project1}, 
+			#{readyConfirm1}, 
+			#{project2}, 
+			#{readyConfirm2}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.confirm.domain.ConfirmDO">
+		update crm_confirm 
+		<set>
+			<if test="project1 != null">`project1` = #{project1}, </if>
+			<if test="readyConfirm1 != null">`ready_confirm_1` = #{readyConfirm1}, </if>
+			<if test="project2 != null">`project2` = #{project2}, </if>
+			<if test="readyConfirm2 != null">`ready_confirm_2` = #{readyConfirm2}</if>
+		</set>
+		where username = #{username}
+	</update>
+	
+	<delete id="remove">
+		delete from crm_confirm where username = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from crm_confirm where username in 
+		<foreach item="username" collection="array" open="(" separator="," close=")">
+			#{username}
+		</foreach>
+	</delete>
+
+</mapper>
